@@ -50,6 +50,7 @@ Never put any of these in a `VITE_` variable.
 ```sh
 npm run build                 # dist/
 npm run dev:worker            # vite build && wrangler dev → http://localhost:8787
+npm run dev:worker -- --port 8797   # if 8787 is already taken
 npm test                      # includes worker/*.test.mjs (offline, mocked fetch and Cache API)
 npx wrangler deploy --dry-run # bundles and checks the config without uploading
 ```
