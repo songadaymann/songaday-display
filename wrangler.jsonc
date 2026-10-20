@@ -1,0 +1,45 @@
+// Worker "songaday-display": the gallery app from dist/ plus the /api/* crypto proxy (worker/).
+// Not deployed yet. No routes or custom domains until cutover (docs/PLAN.md M8); until then it
+// would live at songaday-display.<subdomain>.workers.dev.
+//
+// Secrets (never in this file, never VITE_-prefixed):
+//   npx wrangler secret put OPENSEA_API_KEY
+//   npx wrangler secret put MAINNET_RPC_URL
+// For `npm run dev:worker`, put the same names in .dev.vars (gitignored). Without them the
+// /api/* routes answer 503 {"error":"not configured"} and the gallery hides its crypto parts.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "songaday-display",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "preview_urls": true,
+  "observability": { "enabled": true },
+
+  // Checks dist/ exists (run `npm run build` first) and writes dist/_headers.
+  "build": { "command": "node worker/assets-headers.mjs", "watch_dir": "worker" },
+
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    // No SPA fallback: unknown paths reach the Worker, which serves /embed and 404s the rest
+    // (other names stay free for future displays).
+    "not_found_handling": "none",
+    "run_worker_first": ["/api/*"]
+  },
+
+  "vars": {
+    // Song A Day's ERC-721 on Ethereum mainnet. Public.
+    "SAD_CONTRACT_ADDRESS": "0x19b703f65aA7E1E775BD06c2aa0D0d08c80f1C45"
+    // Optional: "OPENSEA_SLUG" skips the one-a-day slug lookup; "OPENSEA_MAX_PAGES" (default 40,
+    // 200 listings a page) caps the crawl, and must stay under 45 on Workers Free.
+  },
+
+  // Optional: a KV namespace bound as SNAPSHOTS keeps the market, holders and slug snapshots across
+  // isolates (the Cache API does nothing on workers.dev). Needs `wrangler kv namespace create`, then:
+  //   "kv_namespaces": [{ "binding": "SNAPSHOTS", "id": "<namespace id>" }],
+
+  // Per-IP limit on /api/*; keep in step with worker/ratelimit.js. Config only, nothing to create.
+  "ratelimits": [{ "name": "API_RATE_LIMIT", "namespace_id": "20090101", "simple": { "limit": 120, "period": 60 } }]
+}

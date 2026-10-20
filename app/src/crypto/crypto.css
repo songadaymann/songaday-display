@@ -1,0 +1,43 @@
+/* Crypto panels and the dialog's crypto row. Bundled with the crypto chunk, so it only loads
+   for wallet visitors. */
+
+.crypto-note { margin: 0 0 10px; color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
+.crypto-note a { color: var(--text); }
+.crypto-list { margin: 0; padding: 0; list-style: none; }
+
+.crypto-row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 6px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+.crypto-row:hover, .crypto-row:focus-visible { background: var(--hover); }
+.collector-row { grid-template-columns: minmax(0, 1fr) auto; padding: 10px 6px; }
+.crypto-thumb { display: block; width: 64px; height: 36px; object-fit: cover; border-radius: 4px; background: #222; }
+.crypto-thumb.missing { visibility: hidden; }
+.crypto-row-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.crypto-row-sub { overflow: hidden; color: var(--muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.crypto-row-side { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.crypto-address { overflow-wrap: anywhere; }
+
+.crypto-back, .crypto-more {
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  font-size: 13px;
+}
+.crypto-back { margin-bottom: 12px; }
+.crypto-more { width: 100%; margin-top: 12px; }
+.crypto-back:hover, .crypto-more:hover { background: rgba(255, 255, 255, 0.15); }
+
+.crypto-modal { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.crypto-owner { color: #ccc; }
+.crypto-listed { color: var(--accent); font-weight: 700; }
+.crypto-link-button { padding: 0; background: none; border: none; color: var(--text); text-decoration: underline; }

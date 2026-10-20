@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Song A Day Gallery</title>
+    <meta name="description" content="Every Song A Day song in one zoomable wall, one a day since January 1, 2009." />
+    <meta name="theme-color" content="#1a1a1a" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231a1a1a'/%3E%3Cpath fill='%23fff' d='M6 8h8v5H6zm10 0h10v5H16zM6 15h12v5H6zm14 0h6v5h-6zM6 22h5v3H6z'/%3E%3C/svg%3E" />
+    <script>
+      // Embed mode before first paint, so the chrome never flashes. Same rule as src/core/deeplink.js.
+      (function () {
+        var u = new URL(location.href), p = u.searchParams.get('embed');
+        var path = u.pathname.replace(/\/+$/, '').toLowerCase();
+        if ((p !== null && !/^(0|false|no)$/i.test(p)) || path === '/embed' || path === '/embed.html')
+          document.documentElement.classList.add('embed');
+      })();
+    </script>
+    <!-- early manifest fetch (vite.config.mjs) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="app">
+      <header id="top-bar">
+        <div class="top-bar-left">
+          <a class="top-bar-logo" href="/" title="Song A Day gallery">SAD</a>
+          <div class="top-bar-search" role="search">
+            <label class="visually-hidden" for="search-input">Search songs</label>
+            <input
+              id="search-input"
+              type="search"
+              placeholder="Search songs, numbers, words…"
+              autocomplete="off"
+              spellcheck="false"
+              enterkeyhint="search"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded="false"
+              aria-controls="search-results"
+              aria-keyshortcuts="/"
+            />
+            <ul id="search-results" class="search-results" role="listbox" aria-label="Matching songs" hidden></ul>
+          </div>
+        </div>
+        <button id="menu-btn" class="menu-button" type="button" aria-label="Menu" aria-expanded="false" aria-controls="top-nav">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+        </button>
+        <nav id="top-nav" class="top-bar-nav" aria-label="Gallery">
+          <button class="nav-button" id="home-btn" type="button">Home</button>
+          <button class="nav-button" id="explore-btn" type="button" aria-expanded="false" aria-controls="filters">Explore</button>
+          <button class="nav-button" id="animate-btn" type="button" title="Animated previews: Off, Hover or Nearby">
+            Animate <span class="state">Off</span>
+          </button>
+        </nav>
+      </header>
+
+      <main id="stage">
+        <div id="viewer" role="region" aria-label="Wall of every Song A Day song. Arrow keys pan, plus and minus zoom, 0 goes home."></div>
+
+        <aside id="panel" class="sidebar panel" aria-labelledby="panel-title">
+          <div class="sidebar-header">
+            <h2 id="panel-title" class="sidebar-title panel-title"></h2>
+            <button class="sidebar-close panel-close" type="button" aria-label="Close">&times;</button>
+          </div>
+          <div class="panel-body"></div>
+        </aside>
+
+        <aside id="filters" class="sidebar filters" aria-labelledby="filters-title">
+          <div class="sidebar-header">
+            <h2 id="filters-title" class="sidebar-title">Filter Attributes</h2>
+            <button class="sidebar-close filter-close-button" type="button" aria-label="Close filters">&times;</button>
+          </div>
+          <div class="filter-toolbar">
+            <p class="filter-summary" aria-live="polite"></p>
+            <button class="filter-clear" type="button" disabled>Clear Filters</button>
+          </div>
+          <fieldset class="date-range">
+            <legend>Date range</legend>
+            <label>From <input type="date" class="date-from" /></label>
+            <label>To <input type="date" class="date-to" /></label>
+          </fieldset>
+          <div class="filter-content"></div>
+        </aside>
+
+        <div id="controls" class="controls" role="group" aria-label="View">
+          <button id="zoom-in" class="icon-button" type="button" aria-label="Zoom in" title="Zoom in">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          </button>
+          <button id="zoom-out" class="icon-button" type="button" aria-label="Zoom out" title="Zoom out">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" /></svg>
+          </button>
+          <button id="fullscreen-btn" class="icon-button" type="button" aria-label="Full screen" title="Full screen">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" /></svg>
+          </button>
+        </div>
+
+        <a id="embed-link" class="embed-link" target="_blank" rel="noopener" hidden></a>
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+      </main>
+    </div>
+
+    <dialog id="song-modal" class="modal" aria-labelledby="song-title">
+      <button class="close-button" type="button" aria-label="Close">&times;</button>
+      <h2 id="song-title" class="song-title"></h2>
+      <p class="song-meta"><span class="song-number"></span> · <time class="song-date"></time></p>
+      <div class="video-container"></div>
+      <p class="song-description" hidden></p>
+      <div class="attributes-grid"></div>
+      <div class="modal-crypto" data-crypto></div>
+      <div class="modal-footer">
+        <a class="external-link song-link" target="_blank" rel="noopener">View on Song A Day</a>
+        <span class="modal-nav">
+          <button class="nav-arrow song-prev" type="button" aria-label="Previous song" title="Previous song (←)">←</button>
+          <button class="nav-arrow song-next" type="button" aria-label="Next song" title="Next song (→)">→</button>
+        </span>
+      </div>
+    </dialog>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

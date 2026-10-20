@@ -1,0 +1,33 @@
+{
+  "name": "songaday-display",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Ways of looking at Song A Day, starting with a deep-zoom gallery of every song",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "dev:worker": "vite build && wrangler dev",
+    "test": "node --test \"shared/**/*.test.mjs\" \"pipeline/**/*.test.mjs\" \"app/**/*.test.mjs\" \"worker/**/*.test.mjs\"",
+    "archive:audit": "node pipeline/audit-archive.mjs",
+    "cells:import": "node pipeline/cells-import.mjs",
+    "wall:build": "node pipeline/wall-build.mjs",
+    "wall:add": "node pipeline/wall-add.mjs",
+    "wall:verify": "node pipeline/wall-verify.mjs",
+    "wall:manifest": "node pipeline/manifest-write.mjs",
+    "catalog:build": "node pipeline/catalog-build.mjs"
+  },
+  "dependencies": {
+    "openseadragon": "6.1.1"
+  },
+  "devDependencies": {
+    "sharp": "0.35.5",
+    "vite": "8.3.4",
+    "wrangler": "4.147.0"
+  }
+}
