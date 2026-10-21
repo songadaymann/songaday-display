@@ -26,7 +26,7 @@ npm test          # includes app/src/core/*.test.mjs
 | `src/viewer/` | OpenSeadragon setup, the overlay canvas (hover box, masks, outlines) and the GIF layer |
 | `src/ui/` | Dialog, search box, Explore drawer, left panel, toolbar |
 | `src/data/` | Manifest and catalog loading |
-| `src/lib/` | Wallet gate (copied from the `crypto-wallet-gate` skill) and safe `localStorage` |
+| `src/lib/` | Wallet gate (copied from the `crypto-wallet-gate` skill), safe `localStorage`, and `whenSized` (the viewer waits for `#viewer` to have a size; see `main.js`) |
 | `src/crypto/` | Wallet-only features, loaded with `import()`. Its `README.md` documents the `ctx` interface. |
 
 ## URLs

@@ -48,7 +48,7 @@ export function createGallery({ element, manifest, mediaUrl, gifUrl, crossOrigin
     maxTilesPerFrame: coarse ? 2 : 4,
     minPixelRatio: hidpi ? 1 : 0.5,
     maxImageCacheCount: coarse ? 80 : 160,
-    preserveImageSizeOnResize: true,
+    preserveImageSizeOnResize: true, // so `element` must have a size when this runs (main.js waits for one)
     ...(embed ? {} : PAGE_GESTURES),
   });
 

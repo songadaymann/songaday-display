@@ -13,6 +13,7 @@ import { createFilters } from './ui/filters.js';
 import { rowBinder } from './ui/rows.js';
 import { initialAnimateMode, animateToggle, toolbarAdder, fullscreenButton, mobileMenu } from './ui/toolbar.js';
 import { applyWalletGate } from './lib/wallet-gate.js';
+import { whenSized } from './lib/sized.js';
 
 const $ = (sel) => document.querySelector(sel);
 const loc = parseLocation(location.href);
@@ -54,6 +55,10 @@ async function boot() {
   const catalog = createCatalog();
   if (!embed) catalog.load(manifest);
 
+  // OpenSeadragon fits the wall to #viewer when it starts. In a 0×0 window (an embed in a
+  // display:none iframe, a hidden browser pane) that's a 1 px wall, and preserveImageSizeOnResize
+  // keeps it 1 px when the window grows, so the wall stays black. Start it once there's a size.
+  await whenSized($('#viewer'));
   const gallery = createGallery({
     element: $('#viewer'),
     manifest,
