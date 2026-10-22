@@ -14,7 +14,7 @@ service-account*.json
 
 # Private material (see ASSETS.md "Not included")
 private-assets/
-data/
+/data/
 logs/
 
 # Generated

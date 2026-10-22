@@ -12,7 +12,8 @@ for (const file of [path.join(REPO, '.env'), path.join(os.homedir(), '.config/so
 }
 
 const home = (p) => (p && p.startsWith('~/') ? path.join(os.homedir(), p.slice(2)) : p);
-const opt = (name, fallback) => home(process.env[name]) || fallback;
+// fallback may be a function, so a default that needs another variable is only worked out when used.
+const opt = (name, fallback) => home(process.env[name]) || (typeof fallback === 'function' ? fallback() : fallback);
 
 export function need(name) {
   const v = home(process.env[name]);
@@ -30,8 +31,8 @@ export const toolkitDir = () => need('SONGADAY_TOOLKIT_DIR');
 // Two different folders. The toolkit checkout's output/<n>/ holds the art, videos, metadata.json and
 // the description audit; the toolkit's own SONGADAY_OUTPUT_DIR is where it writes each day's
 // initial-metadata.json, and may be somewhere else entirely.
-export const toolkitOutputDir = () => opt('SONGADAY_TOOLKIT_OUTPUT_DIR', path.join(toolkitDir(), 'output'));
-export const outputDir = () => opt('SONGADAY_OUTPUT_DIR', toolkitOutputDir());
+export const toolkitOutputDir = () => opt('SONGADAY_TOOLKIT_OUTPUT_DIR', () => path.join(toolkitDir(), 'output'));
+export const outputDir = () => opt('SONGADAY_OUTPUT_DIR', toolkitOutputDir);
 export const legacyMaster = () => need('SONGADAY_LEGACY_MASTER');
 export const legacyJsonl = () => need('SONGADAY_LEGACY_JSONL');
 
