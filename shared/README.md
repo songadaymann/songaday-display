@@ -19,6 +19,8 @@ The public media root (`MEDIA_BASE`) has the same layout locally (`$SONGADAY_DIS
 
 No key ever gets new bytes once written: a changed tile, still or GIF gets the next `-r<rev>` key, and the manifest names it.
 
+Cache-Control, set at upload by `pipeline/r2-sync.mjs` (its test checks these strings): `public, max-age=31536000, immutable` on every immutable object, and `public, max-age=60` on `wall/current.json`, with no `stale-while-revalidate` (it let browsers show an 11-minute-old copy). The private bucket (`songaday-display-archive`) holds the lossless cell masters at `cells/480x270/<n>.webp`.
+
 ## Manifest (`wall/current.json`)
 
 ```json

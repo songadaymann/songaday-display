@@ -13,6 +13,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "dev:worker": "vite build && wrangler dev",
+    "deploy:tiles": "wrangler deploy -c wrangler.tiles.jsonc",
     "test": "node --test \"shared/**/*.test.mjs\" \"pipeline/**/*.test.mjs\" \"app/**/*.test.mjs\" \"worker/**/*.test.mjs\"",
     "archive:audit": "node pipeline/audit-archive.mjs",
     "cells:import": "node pipeline/cells-import.mjs",
@@ -20,6 +21,10 @@
     "wall:add": "node pipeline/wall-add.mjs",
     "wall:verify": "node pipeline/wall-verify.mjs",
     "wall:manifest": "node pipeline/manifest-write.mjs",
+    "wall:rollback": "node pipeline/wall-rollback.mjs",
+    "gifs:azure": "node pipeline/gifs-azure.mjs",
+    "r2:sync": "node pipeline/r2-sync.mjs",
+    "r2:check": "node pipeline/r2-check.mjs",
     "catalog:build": "node pipeline/catalog-build.mjs"
   },
   "dependencies": {

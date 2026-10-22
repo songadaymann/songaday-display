@@ -4,11 +4,17 @@ The code in this repository is covered by [LICENSE](LICENSE). This file covers e
 
 ## 1. Ours: included and open
 
-Nothing yet.
+Nothing in this repo. The media the pipeline publishes lives on Cloudflare R2 instead.
 
-The gallery displays each song's artwork, video, and audio, but those are not stored in this repo. The scripts here fetch them from the Song A Day archive and serve the generated image tiles from Cloudflare R2.
+### Published Song A Day media (`https://tiles.songaday.world`)
 
-The Song A Day artwork is also the art of the Song A Day NFT collection. The license for that art has not been decided yet. Ask Jonathan before adding any of it to this repo or giving it a license here.
+The wall tiles (`wall/`), per-song stills (`stills/`) and animated previews (`gifs/`) are made from Song A Day videos and artwork. They are published by the scripts in `pipeline/` and are not stored in this repo.
+
+- **Jonathan Mann's own footage and artwork** in them is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Credit: "Song A Day by Jonathan Mann".
+- **Third-party elements** that appear in some frames belong to their owners and are not covered by that license. These include game footage (such as NES games), screenshots of websites and software, logos, and people other than Jonathan.
+- The same images are the art of the Song A Day NFT collection. This license doesn't change who owns a token or what the collection's own terms grant token holders.
+
+Decided by Jonathan on 2026-10-20 (`docs/PLAN.md`, Decision 14).
 
 ## 2. Free third-party: included under their own licenses
 

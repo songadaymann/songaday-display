@@ -1,5 +1,10 @@
 # Worker
 
+Two Workers live here:
+
+- **`songaday-display-tiles`** (`tiles-cors.js`, config `../wrangler.tiles.jsonc`, deployed 2026-10-21 with `npm run deploy:tiles`). It runs on the route `tiles.songaday.world/*`, in front of the public R2 bucket `songaday-display-media`. It passes every request through Cloudflare's cache to R2 unchanged and sets `Access-Control-Allow-Origin: *` on every response. R2 adds that header only when a request carries an `Origin`, and the edge cache could otherwise serve a copy without it to the gallery, whose WebGL drawer then can't use the tile. `npm run r2:check -- --cors` tests this. A zone Response Header Transform Rule would do the same without a Worker, but wrangler's login can't create one; if one is ever added in the dashboard, this Worker can be deleted.
+- **`songaday-display`**, described below.
+
 `songaday-display` is one Cloudflare Worker: the gallery app (the Vite build in `dist/`, served by Workers static assets) plus `/api/*`, a small read-only proxy for the gallery's crypto panels. Config is `../wrangler.jsonc`. **Not deployed yet**; no routes or custom domains until cutover (`docs/PLAN.md` M8).
 
 ## What serves what

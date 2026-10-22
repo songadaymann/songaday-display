@@ -1,0 +1,20 @@
+// Worker "songaday-display-tiles": sets Access-Control-Allow-Origin: * on every response from
+// tiles.songaday.world, the public R2 bucket songaday-display-media (worker/tiles-cors.js says why).
+// It stands in for a zone Response Header Transform Rule, which wrangler's login can't create; with
+// that rule in place this Worker can be deleted. Separate from the gallery Worker (wrangler.jsonc).
+//
+//   npm run deploy:tiles
+//
+// Each request to tiles.songaday.world counts as a Worker request (10M a month included on Workers
+// Paid).
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "songaday-display-tiles",
+  "main": "worker/tiles-cors.js",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "tiles.songaday.world/*", "zone_name": "songaday.world" }],
+  // Busy and boring: log 1% of requests.
+  "observability": { "enabled": true, "head_sampling_rate": 0.01 }
+}
