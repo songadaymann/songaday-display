@@ -41,6 +41,25 @@ Generated files go in `~/Library/Caches/songaday-display` (override with `SONGAD
 
 The Worker (`worker/`) serves the built app and the crypto API. See [worker/README.md](worker/README.md) for `npm run dev:worker`, `.dev.vars`, and `wrangler secret put`.
 
+## Daily step
+
+`pipeline/daily.mjs` runs `wall:add` and then `r2:sync`, for the toolkit's hook and for cron:
+
+```bash
+npm run daily -- --song-id 6504 --json     # one song and any missing before it, then upload
+npm run daily:catch-up -- --json           # the newest ready songs, late GIFs, leftover uploads
+npm run daily:catch-up -- --dry-run --json # what it would do; runs and writes nothing
+```
+
+- Songs past the wall go up in order, each only when its inputs are ready. That means a real still in `EverySongADayPNG` (a 0-byte Dropbox placeholder doesn't count), an `initial-metadata.json` that parses and has the song's number and date, and a YouTube URL in it. Without a YouTube URL a song goes up once the still is 2 hours old. Until then the status is `waiting`, and catch-up retries later.
+- `--song-id N` checks every song between the wall and N the same way. If one before N isn't ready, N is `waiting` too (`blockedBy` names it), and only the ready songs before that one go up.
+- A song that still isn't ready a day after its first file turned up goes up anyway, so one song can't hold up the wall. That covers a manual add with no `initial-metadata.json`, and a still that's online-only or doesn't decode. wall-add then uses its fallbacks: a video frame, the art or a card, and `metadata.json` or just the title and date. A song with no files at all goes up the same way a day after its date ends, but only to fill a hole under a later song. The line lists these songs in `fallback`.
+- Only one run at a time (`daily.lock` in the cache folder). A second run waits 15 s (`--wait`) and then reports `busy`.
+- It prints one line, which is JSON with `--json`: `{status, songId, songCount, tilesWritten, uploaded, ms, error?}`, plus `reason`, `added`, `published`, `fallback` and `warnings` when they apply. Status is `added`, `already-current`, `waiting`, `busy` or `failed`. The result is also saved in the cache folder, in `state/daily/last.json` and `state/daily/<n>.json` for each song it's about, for the toolkit's Upload Song page. Once a song is published its file says so (`publishedAt`), and later runs only add `lastRun`. When a catch-up uploads what an earlier run left in the queue, that run's songs are marked published. Busy runs and dry runs write no file.
+- Exit codes: 0 done; 1 failed; 3 uploaded, but the public check failed (see `npm run r2:check`). With `--song-id`, 4 means the song is waiting and 5 means busy: it isn't on the wall yet. Catch-up exits 0 for both.
+- A GIF that's already in the publish folder while the manifest still lists the song in `noGif` (after `pipeline/gifs-index.mjs`, say) shows up in `warnings`: run `npm run wall:manifest`, then `npm run r2:sync -- --all`.
+- From cron, use node's full path, because cron's PATH is minimal: `*/30 * * * * cd /path/to/songaday-display && /path/to/node pipeline/daily.mjs --catch-up >> ~/Library/Logs/songaday-display-daily.log 2>&1`. Each run logs one line.
+
 ## How it's built
 
 - `shared/layout.mjs`: the wall's geometry and tile addresses, used by both the browser and the scripts. The JSON formats are in [shared/README.md](shared/README.md).
