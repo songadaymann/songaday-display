@@ -1,6 +1,6 @@
 // Worker "songaday-display": the gallery app from dist/ plus the /api/* crypto proxy (worker/).
-// Not deployed yet. No routes or custom domains until cutover (docs/PLAN.md M8); until then it
-// would live at songaday-display.<subdomain>.workers.dev.
+// Serves gallery.songaday.world (moved from the old "songaday-gallery" Worker at cutover, M8) and
+// songaday-display.<subdomain>.workers.dev.
 //
 // Secrets (never in this file, never VITE_-prefixed):
 //   npx wrangler secret put OPENSEA_API_KEY
@@ -15,6 +15,7 @@
   "workers_dev": true,
   "preview_urls": true,
   "observability": { "enabled": true },
+  "routes": [{ "pattern": "gallery.songaday.world", "custom_domain": true }],
 
   // Checks dist/ exists (run `npm run build` first) and writes dist/_headers.
   "build": { "command": "node worker/assets-headers.mjs", "watch_dir": "worker" },

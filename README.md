@@ -4,9 +4,9 @@ Ways of looking at Song A Day, the song Jonathan Mann has written and recorded e
 
 The first display is a rebuilt deep-zoom gallery: every song's video still in one zoomable wall, built with OpenSeadragon. It replaces [song-a-day-gallery](https://github.com/songadaymann/song-a-day-gallery). It's served from Cloudflare, loads in a handful of large tiles instead of hundreds of small ones, and adds each day's new song by rewriting 8 tiles instead of rebuilding the wall.
 
-**Status:** the wall (all 6,502 songs), its stills, GIFs and catalog are published at `https://tiles.songaday.world`. The gallery app itself isn't deployed yet. Design notes and the full plan will be added under `docs/`.
+**Status:** live, with a new song added each day. The wallet-only panels (For Sale, Sales, Collectors) stay hidden until the Worker's OpenSea and RPC keys are set. Design notes and the full plan will be added under `docs/`.
 
-**Live:** media at [`tiles.songaday.world`](https://tiles.songaday.world/wall/current.json) (start from `wall/current.json`). The gallery will move to `gallery.songaday.world`.
+**Live:** [gallery.songaday.world](https://gallery.songaday.world). Media is at [`tiles.songaday.world`](https://tiles.songaday.world/wall/current.json) (start from `wall/current.json`).
 
 ## Run it locally
 
