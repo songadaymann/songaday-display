@@ -12,7 +12,7 @@ The For Sale, Recent Sales and Collectors panels and the "View on OpenSea" link 
 
 ## Rules
 
-- Call only the Worker's `/api/*` routes (`/api/market/summary`, `/api/market/listings`, `/api/market/sales`, `/api/holders`, `/api/ens`). Never call OpenSea, Etherscan, an RPC or Algolia from the browser, and never put a key in a `VITE_` variable.
+- Call only the Worker's `/api/*` routes (`/api/status`, `/api/market/summary`, `/api/market/listings`, `/api/market/sales`, `/api/holders`, `/api/ens`). Never call OpenSea, Etherscan, an RPC or Algolia from the browser, and never put a key in a `VITE_` variable.
 - Fetch nothing until `init` runs. Don't fetch on page load "just in case": fetch when a panel opens, apart from the one cached For Sale count.
 - Without data (a 503 or an error), hide the button instead of showing "N/A".
 
@@ -52,7 +52,7 @@ The For Sale, Recent Sales and Collectors panels and the "View on OpenSea" link 
 
 Behaviour:
 
-- On `init` it fetches only `/api/market/summary`. If that works, **Sales** and **For Sale (N)** appear; if not, they're removed. **Collectors** shows at once and fetches `/api/holders` on click. A 404 or 503 there removes the button.
+- On `init` it fetches `/api/status`, which says which features the Worker has keys for. Buttons for the rest are removed before they ever show. With the OpenSea key it then fetches `/api/market/summary`: if that works, **Sales** and **For Sale (N)** appear. With the RPC, **Collectors** shows and fetches `/api/holders` on click; a 404 or 503 there removes the button.
 - **Dialog row:** "View on OpenSea" appears only for minted songs. Minted means `/api/holders` saw an owner, or the song was seen listed or sold. The row also shows the owner (ENS name when there is one, with "see all N" opening their songs) and the price if the song is listed. The contract address comes from the API responses, never from this bundle.
 - **Deep links:** a `?song=` dialog can open before this chunk loads, and `onModalOpen` doesn't replay it. So `init` fills an already-open dialog itself, reading the song from the URL. That can go once the hook replays.
 - **CSS:** the gate's `display: revert !important` would make the toolbar buttons plain inline-blocks and override `[hidden]`. `crypto.css` restores `inline-flex` and hiding for wallet visitors.

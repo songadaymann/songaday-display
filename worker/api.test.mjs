@@ -31,8 +31,8 @@ function setup({ env = ENV, node = fakeNode({ url: RPC }), openSea = fakeOpenSea
   return { call, get, deps, waits, logs, node, openSea };
 }
 
-test('only the five routes exist', async () => {
-  assert.deepEqual(Object.keys(ROUTES).sort(), ['/api/ens', '/api/holders', '/api/market/listings', '/api/market/sales', '/api/market/summary']);
+test('only the six routes exist', async () => {
+  assert.deepEqual(Object.keys(ROUTES).sort(), ['/api/ens', '/api/holders', '/api/market/listings', '/api/market/sales', '/api/market/summary', '/api/status']);
   const { get } = setup();
   for (const path of ['/api', '/api/', '/api/market', '/api/market/summary/', '/api/holders/x', '/api/opensea/listings', '/api/__proto__', '/api/constructor', '/api/toString']) {
     const { res, body } = await get(path);
@@ -64,10 +64,28 @@ test('same-origin only, and never any CORS headers', async () => {
   assert.equal(crossOrigin(new Request(ORIGIN + '/api/ens', { headers: { 'Sec-Fetch-Site': 'none' } }), url), false);
 });
 
+test('/api/status says which features are configured, as booleans only', async () => {
+  const cases = [
+    [{}, { market: false, holders: false, ens: false }],
+    [ENV, { market: true, holders: true, ens: true }],
+    [{ ...ENV, OPENSEA_API_KEY: '' }, { market: false, holders: true, ens: true }],
+    [{ ...ENV, MAINNET_RPC_URL: undefined }, { market: true, holders: false, ens: false }],
+  ];
+  for (const [env, want] of cases) {
+    const s = setup({ env });
+    const { res, body } = await s.get('/api/status');
+    assert.equal(res.status, 200, JSON.stringify(env));
+    assert.deepEqual(body, want);
+    assert.equal(s.node.log.length + s.openSea.log.length, 0);
+  }
+});
+
+const keyed = Object.keys(ROUTES).filter((p) => p !== '/api/status');
+
 test('missing secrets: every route answers 503 not configured, with no upstream call', async () => {
   const cases = [
-    [{}, Object.keys(ROUTES)],
-    [{ SAD_CONTRACT_ADDRESS: ENV.SAD_CONTRACT_ADDRESS }, Object.keys(ROUTES)],
+    [{}, keyed],
+    [{ SAD_CONTRACT_ADDRESS: ENV.SAD_CONTRACT_ADDRESS }, keyed],
     [{ ...ENV, OPENSEA_API_KEY: '' }, ['/api/market/summary', '/api/market/listings', '/api/market/sales']],
     [{ ...ENV, MAINNET_RPC_URL: undefined }, ['/api/holders', '/api/ens']],
     [{ ...ENV, SAD_CONTRACT_ADDRESS: 'not-an-address' }, ['/api/market/summary', '/api/holders']],

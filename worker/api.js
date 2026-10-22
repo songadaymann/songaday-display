@@ -80,6 +80,14 @@ function salesLimit(param) {
 }
 
 export const ROUTES = Object.freeze({
+  // Which features this deployment has keys for (booleans only), so the page never shows a
+  // button it can't fill.
+  '/api/status': {
+    ready: () => true,
+    async run(c) {
+      return json({ market: market(c.cfg), holders: chain(c.cfg), ens: ens(c.cfg) }, { maxAge: 300 });
+    },
+  },
   '/api/market/summary': {
     ready: market,
     async run(c) {

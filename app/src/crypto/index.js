@@ -4,7 +4,7 @@
 // README.md for ctx.
 //
 // Everything talks to the Worker's /api/* routes only (worker/api.js); keys stay server-side.
-// On start it asks for one thing, the cached For Sale count. The rest waits for a click, and
+// On start it asks which features are configured, then for the cached For Sale count. The rest waits for a click, and
 // the minted/owner data waits for the first song dialog.
 import './crypto.css';
 import { getApi, lookupNames } from './api.js';
@@ -53,11 +53,18 @@ export async function init(ctx) {
   add('collectors', 'Collectors', () => panels.collectors());
   add('forSale', 'For Sale', () => panels.forSale());
   buttons.forSale.classList.add('for-sale');
-  // Collectors fetches on click; if the Worker has no RPC, that click removes it.
-  buttons.collectors.hidden = false;
-
   const onOpen = modalSlot(ctx, { state, holders, openCollector: (a) => panels.collectors(a) });
   ctx.onModalOpen(onOpen);
+
+  // Only show what the Worker has keys for. Collectors then fetches on click.
+  const status = await getApi('/api/status');
+  if (status.ok && status.data.holders) buttons.collectors.hidden = false;
+  else drop('collectors');
+  if (!status.ok || !status.data.market) {
+    drop('sales');
+    drop('forSale');
+    return;
+  }
 
   const summary = await getApi('/api/market/summary');
   if (!summary.ok) {

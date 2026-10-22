@@ -24,6 +24,7 @@ A fixed list of routes. GET only (405 otherwise). Same-origin only: no CORS head
 
 | Route | Needs | Source | Fresh for | Response |
 | --- | --- | --- | --- | --- |
+| `/api/status` | none | Which features have their keys set | 5 min | `{ market, holders, ens }`, booleans only |
 | `/api/market/summary` | `OPENSEA_API_KEY` | OpenSea `listings/collection/{slug}/all`, every page (200 a page, `next` cursor, up to `OPENSEA_MAX_PAGES`), cheapest listing per song | 10 min | `{ contract, listed, tokens[], floor, complete, updatedAt, stale }` |
 | `/api/market/listings` | `OPENSEA_API_KEY` | the same snapshot | 10 min | `{ contract, listings: [{ n, price: { value, decimals, currency }, maker, expires }], complete, updatedAt, stale }`, cheapest first |
 | `/api/market/sales?limit=1..100` (default 50) | `OPENSEA_API_KEY` | OpenSea `events/collection/{slug}?event_type=sale`, then kept only if `event_type === 'sale'` and this contract | 5 min | `{ contract, sales: [{ n, price, seller, buyer, time, tx }], updatedAt, stale }`, newest first |
