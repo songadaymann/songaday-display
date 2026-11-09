@@ -27,12 +27,13 @@
     // No SPA fallback: unknown paths reach the Worker, which serves /embed and 404s the rest
     // (other names stay free for future displays).
     "not_found_handling": "none",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": ["/", "/index.html", "/api/*", "/gallery/api/*"]
   },
 
   "vars": {
     // Song A Day's ERC-721 on Ethereum mainnet. Public.
-    "SAD_CONTRACT_ADDRESS": "0x19b703f65aA7E1E775BD06c2aa0D0d08c80f1C45"
+    "SAD_CONTRACT_ADDRESS": "0x19b703f65aA7E1E775BD06c2aa0D0d08c80f1C45",
+    "STUDIO_GALLERY_REDIRECT": "yes"
     // Optional: "OPENSEA_SLUG" skips the one-a-day slug lookup; "OPENSEA_MAX_PAGES" (default 40,
     // 200 listings a page) caps the crawl, and must stay under 45 on Workers Free.
   },

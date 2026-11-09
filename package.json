@@ -10,9 +10,9 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && vite build --base /gallery/ --outDir ../dist/gallery",
     "preview": "vite preview",
-    "dev:worker": "vite build && wrangler dev",
+    "dev:worker": "npm run build && wrangler dev",
     "deploy:tiles": "wrangler deploy -c wrangler.tiles.jsonc",
     "test": "node --test \"shared/**/*.test.mjs\" \"pipeline/**/*.test.mjs\" \"app/**/*.test.mjs\" \"worker/**/*.test.mjs\"",
     "archive:audit": "node pipeline/audit-archive.mjs",

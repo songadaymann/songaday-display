@@ -61,4 +61,4 @@ export function withSong(href, n) {
   return url.pathname + url.search + url.hash;
 }
 
-export const galleryLink = (origin, n) => `${origin}/?song=${n}`;
+export const galleryLink = (origin, n, base = '/') => `${origin}${base}?song=${n}`;

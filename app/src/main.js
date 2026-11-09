@@ -240,7 +240,7 @@ async function boot() {
 
 function showEmbedLink(n) {
   const a = $('#embed-link');
-  a.href = galleryLink(location.origin, n);
+  a.href = galleryLink(location.origin, n, import.meta.env.BASE_URL);
   a.textContent = `Open #${n} in the gallery ↗`;
   a.hidden = false;
 }

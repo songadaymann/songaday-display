@@ -6,7 +6,7 @@ The first display is a rebuilt deep-zoom gallery: every song's video still in on
 
 **Status:** live. New songs are added with `npm run wall:add` and `npm run r2:sync` until the songaday-toolkit runs that step each day. The wallet-only panels (For Sale, Sales, Collectors) stay hidden until the Worker's OpenSea and RPC keys are set. Design notes and the full plan will be added under `docs/`.
 
-**Live:** [gallery.songaday.world](https://gallery.songaday.world). Media is at [`tiles.songaday.world`](https://tiles.songaday.world/wall/current.json) (start from `wall/current.json`).
+**Live:** [Song A Day Studio gallery](https://songaday.studio/gallery/). Existing embeds still use `gallery.songaday.world`. Media is at [`tiles.songaday.world`](https://tiles.songaday.world/wall/current.json) (start from `wall/current.json`).
 
 ## Run it locally
 

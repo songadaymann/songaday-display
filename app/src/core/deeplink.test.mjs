@@ -54,4 +54,5 @@ test('withSong keeps other parameters', () => {
   assert.equal(withSong('https://g.example/?song=3&date=2009-01-03&zoom=2', 0), '/?zoom=2');
   assert.equal(withSong('https://g.example/?date=2009-01-03', 9), '/?song=9');
   assert.equal(galleryLink('https://gallery.songaday.world', 42), 'https://gallery.songaday.world/?song=42');
+  assert.equal(galleryLink('https://songaday.studio', 42, '/gallery/'), 'https://songaday.studio/gallery/?song=42');
 });

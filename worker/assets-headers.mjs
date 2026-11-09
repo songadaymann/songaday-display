@@ -11,14 +11,16 @@ const dist = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'dist
 export const HEADERS = `# Written by worker/assets-headers.mjs before each wrangler dev/deploy. Don't edit here.
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
+/gallery/assets/*
+  Cache-Control: public, max-age=31536000, immutable
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
 `;
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  if (!fs.existsSync(path.join(dist, 'index.html'))) {
-    console.error('dist/index.html is missing. Run `npm run build` first.');
+  if (!['index.html', 'gallery/index.html'].every((file) => fs.existsSync(path.join(dist, file)))) {
+    console.error('Gallery build is incomplete. Run `npm run build` first.');
     process.exit(1);
   }
   fs.writeFileSync(path.join(dist, '_headers'), HEADERS);

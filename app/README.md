@@ -6,7 +6,7 @@ The zoomable wall of every Song A Day song: vanilla ES modules, Vite, OpenSeadra
 
 ```sh
 npm run dev       # http://localhost:5173, media from $SONGADAY_DISPLAY_CACHE_DIR/publish at /media
-npm run build     # dist/, served by the Worker
+npm run build     # dist/ for old embeds, dist/gallery/ for the Studio page
 npm test          # includes app/src/core/*.test.mjs
 ```
 
@@ -31,6 +31,6 @@ npm test          # includes app/src/core/*.test.mjs
 
 ## URLs
 
-- `/`, plus `/embed`, `/embed/` and `?embed=1` for the chromeless embed. The embed keeps OpenSeadragon's default gestures, as the old one did (mouse and pen: click zooms 2×; touch: double-tap zooms), and a small link opens the hovered song in the full gallery. On the page, a click opens the song after 300 ms unless a second click (a double click, which zooms) or a drag comes first.
+- `https://songaday.studio/gallery/` is the full gallery. The original host serves the chromeless embed at `/embed`, `/embed/`, `/embed.html`, and `/?embed=1`. The embed keeps OpenSeadragon's default gestures (mouse and pen: click zooms 2×; touch: double-tap zooms), and a small link opens the hovered song in the full gallery. On the page, a click opens the song after 300 ms unless a second click (a double click, which zooms) or a drag comes first.
 - `?song=N` or `?date=YYYY-MM-DD` flies to a song and opens it. The URL tracks the open song.
 - The old viewport parameters `zoom`, `x`, `y`, `minZoom`, `maxZoom` and `bounds=x,y,w,h` work in every mode. They are in OpenSeadragon viewport units, and `bounds` wins. `minZoom` and `maxZoom` apply on their own too.

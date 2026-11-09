@@ -5,15 +5,18 @@ Two Workers live here:
 - **`songaday-display-tiles`** (`tiles-cors.js`, config `../wrangler.tiles.jsonc`, deployed 2026-10-21 with `npm run deploy:tiles`). It runs on the route `tiles.songaday.world/*`, in front of the public R2 bucket `songaday-display-media`. It passes every request through Cloudflare's cache to R2 unchanged and sets `Access-Control-Allow-Origin: *` on every response. R2 adds that header only when a request carries an `Origin`, and the edge cache could otherwise serve a copy without it to the gallery, whose WebGL drawer then can't use the tile. `npm run r2:check -- --cors` tests this. A zone Response Header Transform Rule would do the same without a Worker, but wrangler's login can't create one; if one is ever added in the dashboard, this Worker can be deleted.
 - **`songaday-display`**, described below.
 
-`songaday-display` is one Cloudflare Worker: the gallery app (the Vite build in `dist/`, served by Workers static assets) plus `/api/*`, a small read-only proxy for the gallery's crypto panels. Config is `../wrangler.jsonc`. **Not deployed yet**; no routes or custom domains until cutover (`docs/PLAN.md` M8).
+`songaday-display` serves the gallery app and the read-only API for its crypto panels. Studio calls this Worker through a service binding for `/gallery/`, `/gallery/assets/*`, and `/gallery/api/*`. `npm run build` generates both the legacy root and the Studio mount in `dist/`. Config is in `../wrangler.jsonc`.
 
 ## What serves what
 
 | Request | Who answers | Cache |
 | --- | --- | --- |
-| `/`, `/?embed=1`, files in `dist/` | Static-asset layer, without running the Worker | `/assets/*` (content-hashed): `public, max-age=31536000, immutable` from `dist/_headers`. `index.html`: the default `max-age=0, must-revalidate`. |
+| `/`, `/index.html` on `gallery.songaday.world` | Worker redirects to Studio with the query intact when `STUDIO_GALLERY_REDIRECT=yes`, except for embed requests | Redirects use `no-store`. |
+| `/1/<Song A Day contract>/<song number>` on `gallery.songaday.world` | With the same flag, redirects to the matching song at Studio | Redirects use `no-store`. |
 | `/embed`, `/embed/`, `/embed.html` (any case) | Worker → `index.html`, in place (200, no redirect) | as `index.html` |
-| `/api/*` | Worker (`run_worker_first`) | see below |
+| `/?embed=1`, `/gallery/` | Static assets served through the Worker binding | `max-age=0, must-revalidate` |
+| `/assets/*`, `/gallery/assets/*` | Static assets | `public, max-age=31536000, immutable` for content-hashed assets |
+| `/api/*`, `/gallery/api/*` | Worker | see below |
 | anything else | Worker: 404 (other names stay free for future displays) | |
 
 `dist/_headers` is written by `worker/assets-headers.mjs`, which wrangler runs as its custom build before every `wrangler dev` and `wrangler deploy`. It refuses to run if `dist/index.html` is missing, so run `npm run build` first.

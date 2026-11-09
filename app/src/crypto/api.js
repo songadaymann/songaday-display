@@ -8,7 +8,8 @@ export function getApi(path, ttl = 5 * MIN) {
   const hit = memo.get(path);
   if (hit && Date.now() - hit.at < hit.ttl) return hit.promise;
   const entry = { at: Date.now(), ttl, promise: null };
-  entry.promise = fetch(path, { headers: { Accept: 'application/json' }, credentials: 'same-origin' })
+  const url = import.meta.env.BASE_URL + path.slice(1);
+  entry.promise = fetch(url, { headers: { Accept: 'application/json' }, credentials: 'same-origin' })
     .then(async (res) => ({ ok: res.ok, status: res.status, data: res.ok ? await res.json() : null }))
     .catch(() => ({ ok: false, status: 0, data: null }))
     .then((r) => {
